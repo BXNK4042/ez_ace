@@ -1,0 +1,1 @@
+ALTER TABLE "user" ADD COLUMN "temporary_password_used" boolean DEFAULT false NOT NULL;

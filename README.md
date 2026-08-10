@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Exam Prep
 
-## Getting Started
+Private PDF and CSV exam app for one admin and a small student group.
 
-First, run the development server:
+## Local setup
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Copy `.env.example` to `.env`; fill every value.
+2. Run `npm run db:migrate`.
+3. Run `npm run db:seed` once.
+4. Run `npm run dev`.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Tests: `npm test`. Static checks: `npm run lint && npx tsc --noEmit`. Production check: `npm run build`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Requirement evidence and remaining live gates: [`docs/launch-audit.md`](docs/launch-audit.md).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Vercel launch
 
-## Learn More
+1. Import repository as a Vercel Hobby project.
+2. Create Neon Postgres; set `DATABASE_URL` in Development, Preview, Production.
+3. Create a **private** Blob store and connect it to all environments. Vercel supplies `BLOB_READ_WRITE_TOKEN`.
+4. Set `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `SIGNUP_CODE`, `ADMIN_USERNAME`, `ADMIN_PASSWORD` separately per environment.
+5. Run migrations and admin seed against production `DATABASE_URL`, then deploy.
+6. Keep original PDFs/CSVs on local storage. Never use Blob as sole copy.
+7. Check Vercel Usage, Neon storage/compute, and Blob storage monthly. App rejects PDFs above 25 MB and total registered PDF storage above 750 MB.
+8. Invite 1–2 students first. Verify signup, PDF preview/download, interrupted attempt resume, scoring, password reset, and mobile layout before wider invite.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Client uploads send PDFs directly to Blob, avoiding Vercel Function's 4.5 MB request limit. Authenticated finalization also makes local uploads work without a public callback tunnel.
