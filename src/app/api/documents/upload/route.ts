@@ -37,7 +37,7 @@ async function finalize(pathname: string, tokenPayload: string | null) {
   // ponytail: one global upload lock; split by store only if admin upload throughput matters.
   const [, inserted] = await db.batch([
     db.execute(sql`select pg_advisory_xact_lock(750000000)`),
-    db.execute(sql`insert into ${documents} (${documents.classId}, ${documents.kind}, ${documents.filename}, ${documents.pathname}, ${documents.size}) select ${data.classId}, ${data.kind}, ${data.filename}, ${pathname}, ${metadata.size} where (select coalesce(sum(${documents.size}), 0) from ${documents}) + ${metadata.size} <= ${CAP} on conflict (${documents.pathname}) do nothing returning ${documents.id}`),
+    db.execute(sql`insert into ${documents} (${sql.identifier(documents.classId.name)}, ${sql.identifier(documents.kind.name)}, ${sql.identifier(documents.filename.name)}, ${sql.identifier(documents.pathname.name)}, ${sql.identifier(documents.size.name)}) select ${data.classId}, ${data.kind}, ${data.filename}, ${pathname}, ${metadata.size} where (select coalesce(sum(${documents.size}), 0) from ${documents}) + ${metadata.size} <= ${CAP} on conflict (${sql.identifier(documents.pathname.name)}) do nothing returning ${sql.identifier(documents.id.name)}`),
   ]);
   if (!inserted.rows.length) {
     const [raced] = await db.select({ id: documents.id }).from(documents).where(eq(documents.pathname, pathname)).limit(1);

@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
       "default-src 'self'", "base-uri 'self'", "form-action 'self'", "frame-ancestors 'none'",
       "object-src 'none'", "img-src 'self' data: blob:", "font-src 'self'",
       `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'${isDev ? " 'unsafe-eval'" : ""}`, "style-src 'self' 'unsafe-inline'",
-      "worker-src 'self' blob:", "connect-src 'self' https://*.blob.vercel-storage.com",
+      "worker-src 'self' blob:", "connect-src 'self' https://vercel.com https://*.blob.vercel-storage.com",
     ].join("; ");
     return [{ source: "/(.*)", headers: [
       { key: "Content-Security-Policy", value: csp },
