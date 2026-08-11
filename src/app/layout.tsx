@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Exam Prep",
+  title: "EZ-ACE",
   description: "Private classes, PDFs, and practice exams",
 };
 
