@@ -1,12 +1,14 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV === "development";
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   async headers() {
     const csp = [
       "default-src 'self'", "base-uri 'self'", "form-action 'self'", "frame-ancestors 'none'",
       "object-src 'none'", "img-src 'self' data: blob:", "font-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'", "style-src 'self' 'unsafe-inline'",
+      `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'${isDev ? " 'unsafe-eval'" : ""}`, "style-src 'self' 'unsafe-inline'",
       "worker-src 'self' blob:", "connect-src 'self' https://*.blob.vercel-storage.com",
     ].join("; ");
     return [{ source: "/(.*)", headers: [
